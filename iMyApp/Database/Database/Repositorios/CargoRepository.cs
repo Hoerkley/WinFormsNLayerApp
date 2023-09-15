@@ -25,17 +25,17 @@ namespace Database.Repositorios
                  ,[AlteradoEm])
               VALUES
                  (@Nome,
-                 ,@Status,
-                 ,@CriadoEm, 
-                 ,@CriadoPor,
-                 ,@AlteradoPor,
-                 ,@AlteradoEm)";
+                 @Status,
+                 @CriadoEm, 
+                 @CriadoPor,
+                 @AlteradoPor,
+                 @AlteradoEm)";
 
-                using (var connection = new SqlConnection(SqlServer.StrConexao()))
+                using(var connection = new SqlConnection(SqlServer.StrConexao()))
                 {
                       connection.Open();
                       var cmd = new SqlCommand(sql, connection);
-                      cmd.Parameters.AddWithValue("@nome", cargo.Nome);
+                      cmd.Parameters.AddWithValue("@Nome", cargo.Nome);
                       cmd.Parameters.AddWithValue("@Status", cargo.Status);
                       cmd.Parameters.AddWithValue("@CriadoEm", cargo.CriadoEm);
                       cmd.Parameters.AddWithValue("@CriadoPor", cargo.CriadoPor);
@@ -54,7 +54,7 @@ namespace Database.Repositorios
             }       
         }
 
-        public bool Arualizar(Cargo cargo)
+        public bool Atualizar(Cargo cargo, int id)
         {
             try
             {
@@ -63,30 +63,23 @@ namespace Database.Repositorios
                 sqlConnection.Open();
 
                 var sql = @"UPDATE [dbo].[Cargo]
-                  ([Nome]
-                 ,[Status]
-                 ,[CriadoEm]
-                 ,[CriadoPor]
-                 ,[AlteradoPor]
-                 ,[AlteradoEm])
-              VALUES
-                 (@Nome,
-                 ,@Status,
-                 ,@CriadoEm, 
-                 ,@CriadoPor,
-                 ,@AlteradoPor,
-                 ,@AlteradoEm)";
+                           SET [Nome] = @Nome
+                              ,[Status] = @Status
+                              ,[AlteradoPor] = @AlteradoPor
+                              ,[AlteradoEm] =@AlteradoEm
+                         WHERE Id = @Id";
 
                 using (var connection = new SqlConnection(SqlServer.StrConexao()))
                 {
+                    connection.Open();
                     var cmd = new SqlCommand(sql, connection);
-                    cmd.Parameters.AddWithValue("@nome", cargo.Nome);
+                    cmd.Parameters.AddWithValue("@Nome", cargo.Nome);
                     cmd.Parameters.AddWithValue("@Status", cargo.Status);
-                    cmd.Parameters.AddWithValue("@CriadoEm", cargo.CriadoEm);
-                    cmd.Parameters.AddWithValue("@CriadoPor", cargo.CriadoPor);
                     cmd.Parameters.AddWithValue("@AlteradoPor", cargo.AlteradoPor);
                     cmd.Parameters.AddWithValue("@AlteradoEm", cargo.AlteradoEm);
+                    cmd.Parameters.AddWithValue("@Id", id);
                     var resposta = cmd.ExecuteNonQuery();
+                    connection.Close(); 
                     return resposta == 1;
                 }
             }
@@ -140,9 +133,13 @@ namespace Database.Repositorios
             }
         }
 
-        public DataTable ObterTodos(Cargo cargo)
+        public DataTable ObterTodos()
         {
-            var sql = @"SELECT * FROM [dbo].[Cargo]";
+            var sql = @"SELECT [Id]
+                      ,[Nome]
+                      ,[Status]      
+                      ,[AlteradoEm]
+                  FROM [dbo].[Cargo]";
 
             SqlDataAdapter dadaAdapter = null;
             var dataTable = new DataTable();
@@ -163,6 +160,6 @@ namespace Database.Repositorios
             {
                 throw;
             }
-        }
+        }    
     }
 }
