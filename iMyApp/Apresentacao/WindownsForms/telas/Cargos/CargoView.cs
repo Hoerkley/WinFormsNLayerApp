@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using Button = System.Windows.Forms.Button;
 
 namespace WindownsForms.telas.Cargos
 {
@@ -41,7 +42,8 @@ namespace WindownsForms.telas.Cargos
             if (e.RowIndex >= 0)
             {
                 groupBoxCargo.Show();
-                txtCargo.Text = row.Cells[1].Value.ToString();
+                btnSalvar.Text = "Atualizar";
+                txtCargo.Text = row.Cells[2].Value.ToString();
                 chkStatus.Checked = Convert.ToBoolean(row.Cells[3].Value.ToString());
                 varericar = Convert.ToInt32(row.Cells[1].Value);
             }
@@ -52,35 +54,58 @@ namespace WindownsForms.telas.Cargos
         }
         private void btnNovoCargo_Click(object sender, EventArgs e)
         {
+            txtCargo.Clear();
             groupBoxCargo.Visible = !groupBoxCargo.Visible;
+            btnSalvar.Text = "Cadastrar";
         }
 
         private void btnSalvar_Click(object sender, EventArgs e)
         {
+            Button botao = sender as Button;
+
             var nome = txtCargo.Text;
             var status = chkStatus.Checked;
             var novoCargo = new Cargo(nome, status);
             var cargo = new CargoRepository();
-            if (varericar != -1)
+            switch (botao.Text)
             {
-                cargo.Atualizar(novoCargo, varericar);
-                MessageBox.Show("Cargo alterado com sucesso!!");
-            }
-            else
-            {
-                cargo.Inserir(novoCargo);
+                case "Cadastrar":
+                    {
+                        cargo.Inserir(novoCargo);
 
-                var resultado = cargo.Inserir(novoCargo);
+                        var resultado = cargo.Inserir(novoCargo);
 
-                if (resultado)
-                {
-                    MessageBox.Show("Cargo cadastrado com sucesso!!");
-                }
-                else
-                {
-                    MessageBox.Show("Não foi possivel gravar o cargo!!");
-                }
+                        if (resultado)
+                        {
+                            MessageBox.Show("Cargo cadastrado com sucesso!!");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Não foi possivel gravar o cargo!!");
+                        }
+                        //cadastar
+                        break;
+                    }
+                case "Salvar":
+                    {
+                        cargo.Atualizar(novoCargo, varericar);
+                        MessageBox.Show("Cargo alterado com sucesso!!");
+                        //cadastar
+                        break;
+                    }
+                default:
+                    break;
             }
+
+
+            //if (varericar != -1)
+            //{
+                         
+            //}
+            //else
+            //{
+                
+            //}
         }
 
         private void btnRecarregar_Click(object sender, EventArgs e)
