@@ -4,6 +4,7 @@ using Negocio.Entidade;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ namespace Database.Repositorios
 {
     public class CargoRepository
     {
-       public bool Inserir(Cargo cargo)
+        public bool Inserir(Cargo cargo)
         {
             try
             {
@@ -31,19 +32,19 @@ namespace Database.Repositorios
                  @AlteradoPor,
                  @AlteradoEm)";
 
-                using(var connection = new SqlConnection(SqlServer.StrConexao()))
+                using (var connection = new SqlConnection(SqlServer.StrConexao()))
                 {
-                      connection.Open();
-                      var cmd = new SqlCommand(sql, connection);
-                      cmd.Parameters.AddWithValue("@Nome", cargo.Nome);
-                      cmd.Parameters.AddWithValue("@Status", cargo.Status);
-                      cmd.Parameters.AddWithValue("@CriadoEm", cargo.CriadoEm);
-                      cmd.Parameters.AddWithValue("@CriadoPor", cargo.CriadoPor);
-                      cmd.Parameters.AddWithValue("@AlteradoPor", cargo.AlteradoPor);
-                      cmd.Parameters.AddWithValue("@AlteradoEm", cargo.AlteradoEm);
-                      var resposta = cmd.ExecuteNonQuery();
-                      connection.Close();  
-                      return resposta == 1;
+                    connection.Open();
+                    var cmd = new SqlCommand(sql, connection);
+                    cmd.Parameters.AddWithValue("@Nome", cargo.Nome);
+                    cmd.Parameters.AddWithValue("@Status", cargo.Status);
+                    cmd.Parameters.AddWithValue("@CriadoEm", cargo.CriadoEm);
+                    cmd.Parameters.AddWithValue("@CriadoPor", cargo.CriadoPor);
+                    cmd.Parameters.AddWithValue("@AlteradoPor", cargo.AlteradoPor);
+                    cmd.Parameters.AddWithValue("@AlteradoEm", cargo.AlteradoEm);
+                    var resposta = cmd.ExecuteNonQuery();
+                    connection.Close();
+                    return resposta == 1;
                 }
 
             }
@@ -51,7 +52,7 @@ namespace Database.Repositorios
             {
 
                 throw;
-            }       
+            }
         }
 
         public bool Atualizar(Cargo cargo, int id)
@@ -79,7 +80,7 @@ namespace Database.Repositorios
                     cmd.Parameters.AddWithValue("@AlteradoEm", cargo.AlteradoEm);
                     cmd.Parameters.AddWithValue("@Id", id);
                     var resposta = cmd.ExecuteNonQuery();
-                    connection.Close(); 
+                    connection.Close();
                     return resposta == 1;
                 }
             }
@@ -87,49 +88,30 @@ namespace Database.Repositorios
             {
 
                 throw;
-            }           
+            }
         }
 
-        public bool Deletar(Cargo cargo)
+        public bool Deletar(int cargoId)
         {
             try
             {
-                var stringConexao = SqlServer.StrConexao();
-                var sqlConnection = new SqlConnection(stringConexao);
-                sqlConnection.Open();
-
                 var sql = @"DELETE FROM [dbo].[Cargo]
-                 WHERE ([Nome]
-                 ,[Status]
-                 ,[CriadoEm]
-                 ,[CriadoPor]
-                 ,[AlteradoPor]
-                 ,[AlteradoEm])
-              VALUES
-                 (@Nome,
-                 ,@Status,
-                 ,@CriadoEm, 
-                 ,@CriadoPor,
-                 ,@AlteradoPor,
-                 ,@AlteradoEm)";
+                          WHERE Id = @Id";
 
                 using (var connection = new SqlConnection(SqlServer.StrConexao()))
                 {
+                    connection.Open();
                     var cmd = new SqlCommand(sql, connection);
-                    cmd.Parameters.AddWithValue("@nome", cargo.Nome);
-                    cmd.Parameters.AddWithValue("@Status", cargo.Status);
-                    cmd.Parameters.AddWithValue("@CriadoEm", cargo.CriadoEm);
-                    cmd.Parameters.AddWithValue("@CriadoPor", cargo.CriadoPor);
-                    cmd.Parameters.AddWithValue("@AlteradoPor", cargo.AlteradoPor);
-                    cmd.Parameters.AddWithValue("@AlteradoEm", cargo.AlteradoEm);
+                    cmd.Parameters.AddWithValue("@Id", cargoId);
+
                     var resposta = cmd.ExecuteNonQuery();
+                    connection.Close();
                     return resposta == 1;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                throw ex;
             }
         }
 
@@ -160,6 +142,35 @@ namespace Database.Repositorios
             {
                 throw;
             }
-        }    
+        }
+
+        public List<string> Complemento(string cargo)
+        {
+            var sql = @"SELECT [Nome] FROM [dbo].[Cargo]";
+
+            try
+            {
+                using (var connection = new SqlConnection(SqlServer.StrConexao()))
+                {
+                    connection.Open();
+                    SqlCommand com = new SqlCommand(sql, connection);                    
+                    
+                    SqlDataReader reader = com.ExecuteReader();
+
+                    var lista = new List<string>();
+
+                    while (reader.Read())
+                    {
+                        lista.Add(reader.GetString(0).Trim());
+                    }
+
+                    return lista;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

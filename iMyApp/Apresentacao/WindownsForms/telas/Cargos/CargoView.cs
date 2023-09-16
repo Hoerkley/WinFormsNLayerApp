@@ -1,4 +1,5 @@
 ﻿using Database.Repositorios;
+using Microsoft.Data.SqlClient;
 using Negocio.Entidade;
 using System;
 using System.Collections.Generic;
@@ -6,9 +7,11 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace WindownsForms.telas.Cargos
 {
@@ -19,7 +22,30 @@ namespace WindownsForms.telas.Cargos
         {
             InitializeComponent();
         }
+        private void gvCargo_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            var cargoRepository = new CargoRepository();
+            DataGridViewRow row = gvCargo.Rows[e.RowIndex];
 
+            if (gvCargo.Columns[e.ColumnIndex].Name == "Delete")
+            {
+                if (MessageBox.Show("Deseja realmente deletar o registro?",
+                    "Message", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    var resulatdo = cargoRepository.Deletar(int.Parse(row.Cells[1].Value.ToString()));
+                    MessageBox.Show("Registro deletado com sucesso!!");
+                };
+                return;
+            }
+
+            if (e.RowIndex >= 0)
+            {
+                groupBoxCargo.Show();
+                txtCargo.Text = row.Cells[1].Value.ToString();
+                chkStatus.Checked = Convert.ToBoolean(row.Cells[3].Value.ToString());
+                varericar = Convert.ToInt32(row.Cells[1].Value);
+            }
+        }
         private void CargoView_Load(object sender, EventArgs e)
         {
             carregarCagos();
@@ -37,9 +63,9 @@ namespace WindownsForms.telas.Cargos
             var cargo = new CargoRepository();
             if (varericar != -1)
             {
-                cargo.Atualizar(novoCargo,varericar);
+                cargo.Atualizar(novoCargo, varericar);
                 MessageBox.Show("Cargo alterado com sucesso!!");
-            }       
+            }
             else
             {
                 cargo.Inserir(novoCargo);
@@ -62,23 +88,32 @@ namespace WindownsForms.telas.Cargos
             carregarCagos();
         }
 
-        private void gvCargo_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            if (e.RowIndex >= 0)
-            {
-                groupBoxCargo.Show();
-                DataGridViewRow row = gvCargo.Rows[e.RowIndex];
-                txtCargo.Text = row.Cells[1].Value.ToString();
-                chkStatus.Checked = Convert.ToBoolean(row.Cells[2].Value.ToString());
-                varericar = Convert.ToInt32(row.Cells[0].Value.ToString());
-            }
-        }
-
         private void carregarCagos()
         {
             var cargoRepository = new CargoRepository();
             var dataTable = cargoRepository.ObterTodos();
             gvCargo.DataSource = dataTable;
+        }
+
+        private void txtCargo_TextChanged(object sender, EventArgs e)
+        {
+            
+            var nome = txtCargo.Text;
+            var cargo = new CargoRepository();
+
+            var reader = cargo.Complemento(nome);
+
+            AutoCompleteStringCollection autoCompleteStringCollection = new AutoCompleteStringCollection();
+
+
+            foreach (var i in reader)
+            {
+                autoCompleteStringCollection.Add(i);  
+            }
+
+            txtCargo.AutoCompleteSource = AutoCompleteSource.CustomSource;
+            txtCargo.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            txtCargo.AutoCompleteCustomSource = autoCompleteStringCollection;                 
         }
     }
 }
