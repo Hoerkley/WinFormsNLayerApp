@@ -11,12 +11,14 @@ namespace Negocio.Entidade
     {
         public string Cargo { get; set; }
         public string Departamento { get; set; }
+        public DateTime Admissao { get; set; }
 
         public Colaborador(string cargo, string departamento, string nome) 
         {
             Cargo = cargo;
             Departamento = departamento;
             Nome = nome;
+            Admissao = DateTime.Now;
 
             CriadoEm = DateTime.Now;
             CriadoPor = nome;

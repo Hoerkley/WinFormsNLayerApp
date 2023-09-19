@@ -34,6 +34,7 @@ namespace Database.Repositorios
                                ,[EstadoCivil]
                                ,[Nacionalidade]
                                ,[Cargo]
+                               ,[DataAdmissao]
                                ,[CriadoEm]
                                ,[CriadoPor]
                                ,[AlteradoEM]
@@ -55,6 +56,7 @@ namespace Database.Repositorios
                                ,EstadoCivil
                                ,Nacionalidade
                                ,Cargo
+                               ,DataAdmissao
                                ,CriadoEm
                                ,CriadoPor
                                ,AlteradoEM
@@ -79,6 +81,7 @@ namespace Database.Repositorios
                     cmd.Parameters.AddWithValue("@Departamento", funcionario.EstadoCivil);
                     cmd.Parameters.AddWithValue("@Departamento", funcionario.Nacionalidade);
                     cmd.Parameters.AddWithValue("@Cargo", funcionario.Cargo);
+                    cmd.Parameters.AddWithValue("@DataAdmissao", funcionario.Admissao);
                     cmd.Parameters.AddWithValue("@CriadoEm", funcionario.CriadoEm);
                     cmd.Parameters.AddWithValue("@CriadoPor", funcionario.CriadoPor);
                     cmd.Parameters.AddWithValue("@AlteradoPor", funcionario.AlteradoEm);
