@@ -13,12 +13,13 @@ namespace Negocio.Entidade
         public string Departamento { get; set; }
         public DateTime Admissao { get; set; }
 
-        public Colaborador(string cargo, string departamento, string nome) 
+        public Colaborador(string cargo, string departamento, string nome, string cpf, string rg, DateTime nascimento, bool Status, string Telefone, string Genero)
         {
             Cargo = cargo;
             Departamento = departamento;
             Nome = nome;
             Admissao = DateTime.Now;
+            Cpf = cpf;
 
             CriadoEm = DateTime.Now;
             CriadoPor = nome;
