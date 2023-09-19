@@ -96,16 +96,6 @@ namespace WindownsForms.telas.Cargos
                 default:
                     break;
             }
-
-
-            //if (varericar != -1)
-            //{
-                         
-            //}
-            //else
-            //{
-                
-            //}
         }
 
         private void btnRecarregar_Click(object sender, EventArgs e)

@@ -8,11 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace WindownsForms.telas.clientes
+namespace WindownsForms.telas.Funcioarios
 {
-    public partial class CadastrarCleinte : Form
+    public partial class Funcionario : Form
     {
-        public CadastrarCleinte()
+        public Funcionario()
         {
             InitializeComponent();
         }
