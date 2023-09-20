@@ -27,7 +27,9 @@ namespace WindownsForms.telas.Funcioarios
             var telefone = txtTelefone.Text;
             var cargo = cbCargo.Text;
             var departamento = txtDepartamento.Text;
+            /*
             var novoFuncionario = new Colaborador(cargo,departamento,nome);
+            */ 
             var funcionario = new FuncionarioRepository();
 
 

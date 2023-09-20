@@ -11,8 +11,26 @@ using System.Threading.Tasks;
 
 namespace Database.Repositorios
 {
+    /// <summary>
+    /// <c>CargoRepository</c> - Executa comandos SQL (CRUD) na tabela de [dbo]. [Cargo]
+    /// <example>Exemplo:
+    ///     var repository = new CargoRepository();
+    /// </example>Example>
+    /// </summary>
     public class CargoRepository
     {
+        /// <summary>
+        /// Insere um novo registro na tabela Cargo
+        /// <example>
+        /// <code>
+        ///     var repositorio = new CargoRepository();
+        ///     var cargo = new Cargo("Nome", "Status");
+        ///     var resultado = repository.Inserir(cargo);
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <param name="cargo">/Entidade->Cargo</param>
+        /// <returns>true ou false</returns>
         public bool Inserir(Cargo cargo)
         {
             try

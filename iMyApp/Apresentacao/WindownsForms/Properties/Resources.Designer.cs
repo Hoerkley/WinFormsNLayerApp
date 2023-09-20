@@ -63,6 +63,26 @@ namespace WindownsForms.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap senai {
+            get {
+                object obj = ResourceManager.GetObject("senai", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap senai_2 {
+            get {
+                object obj = ResourceManager.GetObject("senai 2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap simbolo_de_interface_de_camera_fotografica_para_botao {
             get {
                 object obj = ResourceManager.GetObject("simbolo-de-interface-de-camera-fotografica-para-botao", resourceCulture);

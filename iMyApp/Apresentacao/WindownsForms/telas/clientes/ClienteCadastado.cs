@@ -18,8 +18,9 @@ namespace WindownsForms.telas.clientes
             InitializeComponent();
             var cliente = new Cliente();
 
-
+            /*
             var colaborador = new Colaborador();
+            */
         }
         private void btnSalvar_Click(object sender, EventArgs e)
         {
