@@ -1,6 +1,7 @@
 ﻿using Database.Repositorios;
 using Microsoft.Data.SqlClient;
 using Negocio.Entidade;
+using Negocio.Validators;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -56,20 +57,27 @@ namespace WindownsForms.telas.Cargos
         {
             txtCargo.Clear();
             groupBoxCargo.Visible = !groupBoxCargo.Visible;
-            btnSalvar.Text = "Cadastrar";
+            btnSalvar.Text = "Atualizar";
         }
 
         private void btnSalvar_Click(object sender, EventArgs e)
         {
-            Button botao = sender as Button;
-
             var nome = txtCargo.Text;
             var status = chkStatus.Checked;
             var novoCargo = new Cargo(nome, status);
+
+            var erros = Validacoes.getValidationErros(novoCargo);
+            foreach (var erro in erros)
+            {
+                MessageBox.Show(erro.ErrorMessage);
+            }
+
+
             var cargo = new CargoRepository();
+            Button botao = sender as Button;
             switch (botao.Text)
             {
-                case "Cadastrar":
+                case "Atualizar":
                     {
                         cargo.Inserir(novoCargo);
 
