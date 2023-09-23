@@ -9,11 +9,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2 -Aplicacao", "2 -Aplicaca
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3 - Infra", "3 - Infra", "{5FF1589D-1D31-4523-98E4-BC1EC2DD3F97}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindownsForms", "Apresentacao\WindownsForms\WindownsForms.csproj", "{EDC90749-E57C-4B24-80E9-DA7C9848CB45}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WindownsForms", "Apresentacao\WindownsForms\WindownsForms.csproj", "{EDC90749-E57C-4B24-80E9-DA7C9848CB45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Negocio", "Negocio\Negocio\Negocio.csproj", "{39B3F8FC-6F63-405F-B86C-52EFBEA70F64}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Negocio", "Negocio\Negocio\Negocio.csproj", "{39B3F8FC-6F63-405F-B86C-52EFBEA70F64}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database", "Database\Database\Database.csproj", "{E0D9C8E3-D14A-4F1C-9B76-E50D85A30B55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Database", "Database\Database\Database.csproj", "{E0D9C8E3-D14A-4F1C-9B76-E50D85A30B55}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebReport", "D:\Banco de dados\WinFormsNLayerApp\iMyApp\Apresentacao\WebReport\WebReport.csproj", "{A852EE0B-F485-4A0D-9823-C26184B4EE0B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{E0D9C8E3-D14A-4F1C-9B76-E50D85A30B55}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0D9C8E3-D14A-4F1C-9B76-E50D85A30B55}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0D9C8E3-D14A-4F1C-9B76-E50D85A30B55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A852EE0B-F485-4A0D-9823-C26184B4EE0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A852EE0B-F485-4A0D-9823-C26184B4EE0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A852EE0B-F485-4A0D-9823-C26184B4EE0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A852EE0B-F485-4A0D-9823-C26184B4EE0B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -41,6 +47,7 @@ Global
 		{EDC90749-E57C-4B24-80E9-DA7C9848CB45} = {69D2D834-2F12-42D0-9EFB-4BF06A9D1A9A}
 		{39B3F8FC-6F63-405F-B86C-52EFBEA70F64} = {6D5A6088-AF37-4A61-94BE-C6422928AF8C}
 		{E0D9C8E3-D14A-4F1C-9B76-E50D85A30B55} = {5FF1589D-1D31-4523-98E4-BC1EC2DD3F97}
+		{A852EE0B-F485-4A0D-9823-C26184B4EE0B} = {69D2D834-2F12-42D0-9EFB-4BF06A9D1A9A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {74F56223-AFC9-4FC6-9627-8BB4EA1AB9F3}
