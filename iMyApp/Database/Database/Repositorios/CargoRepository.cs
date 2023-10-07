@@ -1,130 +1,41 @@
-﻿using Database.Conexoes;
+﻿using Dapper;
+using Database.Conexoes;
 using Microsoft.Data.SqlClient;
 using Negocio.Entidade;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Common;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Database.Repositorios
 {
-    /// <summary>
-    /// <c>CargoRepository</c> - Executa comandos SQL (CRUD) na tabela de [dbo]. [Cargo]
-    /// <example>Exemplo:
-    ///     var repository = new CargoRepository();
-    /// </example>Example>
-    /// </summary>
-    public class CargoRepository
+    internal class CargoRepository
     {
-        /// <summary>
-        /// Insere um novo registro na tabela Cargo
-        /// <example>
-        /// <code>
-        ///     var repositorio = new CargoRepository();
-        ///     var cargo = new Cargo("Nome", "Status");
-        ///     var resultado = repository.Inserir(cargo);
-        /// </code>
-        /// </example>
-        /// </summary>
-        /// <param name="cargo">/Entidade->Cargo</param>
-        /// <returns>true ou false</returns>
-        public bool Inserir(Cargo cargo)
+        public bool Atualizar(Cargo cargo)
         {
             try
             {
-                var sql = @"INSERT INTO [dbo].[Cargo]
-                  ([Nome]
-                 ,[Status]
-                 ,[CriadoEm]
-                 ,[CriadoPor]
-                 ,[AlteradoPor]
-                 ,[AlteradoEm])
-              VALUES
-                 (@Nome,
-                 @Status,
-                 @CriadoEm, 
-                 @CriadoPor,
-                 @AlteradoPor,
-                 @AlteradoEm)";
-
-                using (var connection = new SqlConnection(SqlServer.StrConexao()))
+                using (var connection = new SqlConnection(SqlServerContext.Conexao))
                 {
-                    connection.Open();
-                    var cmd = new SqlCommand(sql, connection);
-                    cmd.Parameters.AddWithValue("@Nome", cargo.Nome);
-                    cmd.Parameters.AddWithValue("@Status", cargo.Status);
-                    cmd.Parameters.AddWithValue("@CriadoEm", cargo.CriadoEm);
-                    cmd.Parameters.AddWithValue("@CriadoPor", cargo.CriadoPor);
-                    cmd.Parameters.AddWithValue("@AlteradoPor", cargo.AlteradoPor);
-                    cmd.Parameters.AddWithValue("@AlteradoEm", cargo.AlteradoEm);
-                    var resposta = cmd.ExecuteNonQuery();
-                    connection.Close();
-                    return resposta == 1;
-                }
+                    var sql = @"UPDATE [dbo].[Cargo]
+                                SET
+                                    [Nome] = @nome,
+                                    [Status] = @status,
+                                    [AlteradoEm] = @alteradoEm,
+                                    [AlteradoPor] = @alteradoPor
+                                WHERE
+                                    [Id] = @id";
 
-            }
-            catch (Exception)
-            {
+                    //Protege os valores que estão chegando pela Classe Cargo de SqlInjection
+                    //E passa para o Dapper Substituir no "var sql" os valores @ pelo valor que chegou
+                    //no parametro.
+                    var parametros = new DynamicParameters();
+                    parametros.Add("@nome", cargo.Nome);
+                    parametros.Add("@status", cargo.Status);
+                    parametros.Add("@alteradoEm", DateTime.Now);
+                    parametros.Add("@alteradoPor", cargo.AlteradoPor);
+                    parametros.Add("@id", cargo.Id);
 
-                throw;
-            }
-        }
+                    var linhasAfetadas = connection.Execute(sql, parametros);
 
-        public bool Atualizar(Cargo cargo, int id)
-        {
-            try
-            {
-                var stringConexao = SqlServer.StrConexao();
-                var sqlConnection = new SqlConnection(stringConexao);
-                sqlConnection.Open();
-
-                var sql = @"UPDATE [dbo].[Cargo]
-                           SET [Nome] = @Nome
-                              ,[Status] = @Status
-                              ,[AlteradoPor] = @AlteradoPor
-                              ,[AlteradoEm] =@AlteradoEm
-                         WHERE Id = @Id";
-
-                using (var connection = new SqlConnection(SqlServer.StrConexao()))
-                {
-                    connection.Open();
-                    var cmd = new SqlCommand(sql, connection);
-                    cmd.Parameters.AddWithValue("@Nome", cargo.Nome);
-                    cmd.Parameters.AddWithValue("@Status", cargo.Status);
-                    cmd.Parameters.AddWithValue("@AlteradoPor", cargo.AlteradoPor);
-                    cmd.Parameters.AddWithValue("@AlteradoEm", cargo.AlteradoEm);
-                    cmd.Parameters.AddWithValue("@Id", id);
-                    var resposta = cmd.ExecuteNonQuery();
-                    connection.Close();
-                    return resposta == 1;
-                }
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-
-        public bool Deletar(int cargoId)
-        {
-            try
-            {
-                var sql = @"DELETE FROM [dbo].[Cargo]
-                          WHERE Id = @Id";
-
-                using (var connection = new SqlConnection(SqlServer.StrConexao()))
-                {
-                    connection.Open();
-                    var cmd = new SqlCommand(sql, connection);
-                    cmd.Parameters.AddWithValue("@Id", cargoId);
-
-                    var resposta = cmd.ExecuteNonQuery();
-                    connection.Close();
-                    return resposta == 1;
+                    return linhasAfetadas == 1;
                 }
             }
             catch (Exception ex)
@@ -133,60 +44,147 @@ namespace Database.Repositorios
             }
         }
 
-        public DataTable ObterTodos()
+        public bool Deletar(Cargo cargo)
         {
-            var sql = @"SELECT [Id]
-                      ,[Nome]
-                      ,[Status]      
-                      ,[AlteradoEm]
-                  FROM [dbo].[Cargo]";
-
-            SqlDataAdapter dadaAdapter = null;
-            var dataTable = new DataTable();
             try
             {
-                using (var connection = new SqlConnection(SqlServer.StrConexao()))
+                using (var connection = new SqlConnection(SqlServerContext.Conexao))
                 {
-                    var cmd = connection.CreateCommand();
+                    var sql = @"DELETE FROM Cargo WHERE Id = @id";
 
-                    cmd.CommandText = sql;
+                    var parametros = new DynamicParameters();
+                    parametros.Add("@id", cargo.Id);
 
-                    dadaAdapter = new SqlDataAdapter(cmd.CommandText, connection);
-                    dadaAdapter.Fill(dataTable);
-                    return dataTable;
+                    var linhasAfetadas = connection.Execute(sql, parametros);
+
+                    return linhasAfetadas == 1;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public object Deletar(int v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Incluir(Cargo cargo)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(SqlServerContext.Conexao))
+                {
+                    var sql = @"INSERT INTO [dbo].[Cargo]
+                            ([Nome]
+                            ,[Status]
+                            ,[CriadoEm]
+                            ,[CriadoPor]
+                            ,[AlteradoEm]
+                            ,[AlteradoPor])
+                        VALUES
+                            (@nome, 
+                            @status, 
+                            @criadoEm, 
+                            @criadoPor, 
+                            @alteradoEm, 
+                            @alteradoPor)";
+
+                    //Protege os valores que estão chegando pela Classe Cargo de SqlInjection
+                    //E passa para o Dapper Substituir no "var sql" os valores @ pelo valor que chegou
+                    //no parametro.
+                    var parametros = new DynamicParameters();
+                    parametros.Add("@nome", cargo.Nome);
+                    parametros.Add("@status", cargo.Status);
+                    parametros.Add("@criadoEm", cargo.CriadoEm);
+                    parametros.Add("@criadoPor", cargo.CriadoPor);
+                    parametros.Add("@alteradoEm", cargo.AlteradoEm);
+                    parametros.Add("@alteradoPor", cargo.AlteradoPor);
+
+                    var linhasAfetadas = connection.Execute(sql, parametros);
+
+                    return linhasAfetadas == 1;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public Cargo ObterPorId(int id)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(SqlServerContext.Conexao))
+                {
+
+                    //Comando Sql a ser executado no banco de dados use @ para criar espaços
+                    //reservados de substituição
+                    var sql = "SELECT * FROM Cargos WHERE Id = @id";
+
+                    //Cria os parametros 
+                    var parametros = new DynamicParameters();
+                    parametros.Add("@id", id);
+
+                    //Executa o comando no banco e substitui o @id pelo int id do parametro do Metodo
+                    //E retorna uma única linha do banco QuerySingleOrDefault.
+                    var cargos = connection.QuerySingleOrDefault<Cargo>(sql, parametros);
+
+                    return cargos;
+                }
+            }
+            catch (Exception ex)
             {
                 throw;
             }
         }
-
-        public List<string> Complemento(string cargo)
+        public List<Cargo> ObterTodos()
         {
-            var sql = @"SELECT [Nome] FROM [dbo].[Cargo]";
-
             try
             {
-                using (var connection = new SqlConnection(SqlServer.StrConexao()))
+                using (var connection = new SqlConnection(SqlServerContext.Conexao))
                 {
-                    connection.Open();
-                    SqlCommand com = new SqlCommand(sql, connection);                    
-                    
-                    SqlDataReader reader = com.ExecuteReader();
+                    var sql = "SELECT * FROM Cargos";
 
-                    var lista = new List<string>();
+                    var cargos = connection.Query<Cargo>(sql);
 
-                    while (reader.Read())
-                    {
-                        lista.Add(reader.GetString(0).Trim());
-                    }
-
-                    return lista;
+                    return cargos.ToList();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+
+                throw;
+            }
+
+        }
+
+        public List<Cargo> ObterTodosPorStatus(int status)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(SqlServerContext.Conexao))
+                {
+                    //Comando Sql a ser executado no banco de dados use @ para criar espaços
+                    //reservados de substituição
+                    var sql = "SELECT * FROM Cargos WHERE Status = @status";
+
+                    //Cria os parametros 
+                    var parametros = new DynamicParameters();
+                    parametros.Add("@status", status);
+
+                    //Executa o comando no banco e substitui o @status pelo int status do parametro do Metodo
+                    var cargos = connection.Query<Cargo>(sql, parametros).ToList();
+
+                    return cargos;
+                }
+            }
+            catch (Exception ex)
+            {
+
                 throw;
             }
         }
